@@ -1,3 +1,20 @@
+<?php
+require "vendor/autoload.php";
+
+$stripe = new \Stripe\StripeClient(
+  'sk_test_51LgIIyCoV3pmO74u24jtvFPyv3LJvGPAxXc3Yrlc1gvOSq4S0S2nF4ArRfHNs02vA49I1ls2H6bwTBhjm3Wh1baS00TqcPOJbs'
+);
+$product = $stripe->products->retrieve(
+	'prod_MP6xivpsWgbgMd',
+	[]
+);
+$price = $stripe->prices->retrieve('price_1LgIk0CoV3pmO74ukuLxQCUV',[]);
+#echo '<pre>';
+#var_dump($product);
+#var_dump($price);
+#echo '</pre>';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -55,7 +72,7 @@
         <!--Grid column-->
         <div class="col-md-6 mb-4">
 
-          <img src="rolex.png" class="img-fluid" alt="">
+        <img src="<?php echo array_pop($product->images); ?>" alt="<?php echo $product->name; ?>" />
 
         </div>
         <!--Grid column-->
@@ -77,19 +94,19 @@
 
             <p class="lead">
               <span class="mr-1">
-                <del>₱20,000</del>
+                <del>PHP 16,0000</del>
               </span>
-              <span>₱15,000</span>
+              <span><?php echo strtoupper($price->currency); ?> <?php echo $price->unit_amount_decimal; ?></span>
             </p>
 
-            <p class="lead font-weight-bold">Hylex 24k Gold Premiere</p>
+            <p class="lead font-weight-bold"><?php echo $product->name; ?> 24k Gold Premiere</p>
 
-            <p>We call this perpetual spirit. It is based on a fundamental belief in unlimited human potential, in continuous improvement and lasting excellence, in always pushing the boundaries and taking the long-term view. Our watches are built to last. So is our contribution to future generations. Discover more about our corporate commitments on Hylex.org</p>
+            <p><?php echo $product->description; ?></p>
 
-            <form class="d-flex justify-content-left">
+            <form class="d-flex justify-content-left" action="/stripe-api/create-checkout-session.php" method="POST">
               <!-- Default input -->
               <input type="number" value="1" aria-label="Search" class="form-control" style="width: 100px">
-              <button class="btn btn-primary btn-md my-0 p" type="submit">Add to cart
+              <button class="btn btn-primary btn-md my-0 p" type="submit" id="checkout-button">Add to cart
                 <i class="fas fa-shopping-cart ml-1"></i>
               </button>
 
@@ -108,14 +125,6 @@
 
       
   </main>
- 
-    <!--/.Copyright-->
-
-  </footer>
-  <!--/.Footer-->
-
-  <!-- SCRIPTS -->
-  <!-- JQuery -->
   <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
   <!-- Bootstrap tooltips -->
   <script type="text/javascript" src="js/popper.min.js"></script>
